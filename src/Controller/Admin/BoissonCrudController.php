@@ -29,7 +29,7 @@ class BoissonCrudController extends AbstractCrudController
             ->setBasePath('/uploads/image')
             ->setUploadDir('public/uploads/image')
             ->setLabel('image'),
-            AssociationField::new('Categorie')
+            AssociationField::new('categorie')
             ->setCrudController(CategorieCrudController::class),
         ];
     }
