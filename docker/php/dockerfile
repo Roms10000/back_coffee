@@ -1,0 +1,18 @@
+# On part d'une image PHP officielle avec FPM
+FROM php:8.3-fpm
+
+# Installer les dépendances système nécessaires
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libicu-dev \
+    libonig-dev \
+    libpq-dev \
+    && docker-php-ext-install intl pdo pdo_mysql mbstring opcache \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installer Composer globalement
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /var/www/symfony
