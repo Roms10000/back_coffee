@@ -25,7 +25,10 @@ class ProduitCrudController extends AbstractCrudController
             IdField::new('id') -> onlyOnIndex(),
             TextField::new('name')
             ->setLabel('Nom'),
-            TextEditorField::new('description'),
+            TextEditorField::new('description')
+            ->formatValue(function ($value, $entity) {
+            return strip_tags($value);
+            }),
             NumberField::new('price')
             ->setLabel('Prix en €'),
             NumberField::new('intensity')

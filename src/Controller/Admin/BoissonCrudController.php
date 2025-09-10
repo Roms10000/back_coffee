@@ -27,7 +27,10 @@ class BoissonCrudController extends AbstractCrudController
         return [
             IdField::new('id') -> onlyOnIndex(),
             TextField::new('name'),
-            TextEditorField::new('description'),
+            TextEditorField::new('description')
+            ->formatValue(function ($value, $entity) {
+             return strip_tags($value);
+            }),
             NumberField::new('note')
             ->setLabel('Note /10'),
             ImageField::new('image')
