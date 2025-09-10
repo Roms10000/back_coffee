@@ -7,33 +7,24 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator; 
+use App\Entity\Boisson;
+use App\Entity\Archive;
+use App\Entity\Categorie;
+use App\Entity\Favoris;
+use App\Entity\Produit;
+use App\Entity\Recette;
+use App\Entity\User;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
     public function index(): Response
     {
-        return parent::index();
+        $routeBuilder = $this->container->get(AdminUrlGenerator::class);
+        $url = $routeBuilder->setController(UserCrudController::class)->generateUrl();
 
-        // Option 1. You can make your dashboard redirect to some common page of your backend
-        //
-        // 1.1) If you have enabled the "pretty URLs" feature:
-        // return $this->redirectToRoute('admin_user_index');
-        //
-        // 1.2) Same example but using the "ugly URLs" that were used in previous EasyAdmin versions:
-        // $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        // return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
-
-        // Option 2. You can make your dashboard redirect to different pages depending on the user
-        //
-        // if ('jane' === $this->getUser()->getUsername()) {
-        //     return $this->redirectToRoute('...');
-        // }
-
-        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
-        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
-        //
-        // return $this->render('some/path/my-dashboard.html.twig');
+        return $this->redirect($url);
     }
 
     public function configureDashboard(): Dashboard
@@ -45,6 +36,12 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+        yield MenuItem::linkToCrud('Les produits', 'fas fa-list', Produit::class);
+        yield MenuItem::linkToCrud('Les boissons', 'fas fa-list', Boisson::class);
+        yield MenuItem::linkToCrud('Les utilisateurs', 'fas fa-user', User::class);
+        yield MenuItem::linkToCrud('Les recettes', 'fas fa-list', Recette::class);
+        yield MenuItem::linkToCrud('Les categories', 'fas fa-tags', Categorie::class);     
+        yield MenuItem::linkToCrud('Les archives', 'fas fa-archive', Archive::class);
+        yield MenuItem::linkToCrud('Les favoris', 'fas fa-star', Favoris::class);
     }
 }

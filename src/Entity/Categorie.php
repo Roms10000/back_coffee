@@ -3,7 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\CategorieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Boisson;
+
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
@@ -15,6 +19,17 @@ class Categorie
 
     #[ORM\Column(length: 100)]
     private ?string $name = null;
+
+    /**
+     * @var Collection<int, Boisson>
+     */
+    #[ORM\OneToMany(targetEntity: Boisson::class, mappedBy: 'categorie')]
+    private Collection $boissons;
+
+    public function __construct()
+    {
+        $this->boissons = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -31,5 +46,40 @@ class Categorie
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Boisson>
+     */
+    public function getBoissons(): Collection
+    {
+        return $this->boissons;
+    }
+
+    public function addBoisson(Boisson $boisson): static
+    {
+        if (!$this->boissons->contains($boisson)) {
+            $this->boissons->add($boisson);
+            $boisson->setCategorie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoisson(Boisson $boisson): static
+    {
+        if ($this->boissons->removeElement($boisson)) {
+            // set the owning side to null (unless already changed)
+            if ($boisson->getCategorie() === $this) {
+                $boisson->setCategorie(null);
+            }
+        }
+
+        return $this;
+    }
+    
+    public function __toString(): string
+    {
+    return $this->name ?? '';
     }
 }
