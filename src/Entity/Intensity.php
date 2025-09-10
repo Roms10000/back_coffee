@@ -2,28 +2,27 @@
 
 namespace App\Entity;
 
-use App\Repository\CategorieRepository;
+use App\Repository\IntensityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Boisson;
 
-
-#[ORM\Entity(repositoryClass: CategorieRepository::class)]
-class Categorie
+#[ORM\Entity(repositoryClass: IntensityRepository::class)]
+class Intensity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Boisson>
      */
-    #[ORM\OneToMany(targetEntity: Boisson::class, mappedBy: 'categorie')]
+    #[ORM\OneToMany(targetEntity: Boisson::class, mappedBy: 'intensity')]
     private Collection $boissons;
 
     public function __construct()
@@ -41,7 +40,7 @@ class Categorie
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -60,7 +59,7 @@ class Categorie
     {
         if (!$this->boissons->contains($boisson)) {
             $this->boissons->add($boisson);
-            $boisson->setCategorie($this);
+            $boisson->setIntensity($this);
         }
 
         return $this;
@@ -70,14 +69,14 @@ class Categorie
     {
         if ($this->boissons->removeElement($boisson)) {
             // set the owning side to null (unless already changed)
-            if ($boisson->getCategorie() === $this) {
-                $boisson->setCategorie(null);
+            if ($boisson->getIntensity() === $this) {
+                $boisson->setIntensity(null);
             }
         }
 
         return $this;
     }
-    
+
     public function __toString(): string
     {
     return $this->name ?? '';

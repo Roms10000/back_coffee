@@ -2,18 +2,17 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Categorie;
+use App\Entity\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
-class CategorieCrudController extends AbstractCrudController
+class TypeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Categorie::class;
+        return Type::class;
     }
 
     public function configureFields(string $pageName): iterable
@@ -21,7 +20,7 @@ class CategorieCrudController extends AbstractCrudController
         return [
             IdField::new('id')-> onlyOnIndex(),
             TextField::new('name')
-            ->setLabel('Categorie de boisson'),
+            ->setLabel('Type de boisson'),
         ];
     }
 }

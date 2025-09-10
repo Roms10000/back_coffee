@@ -47,6 +47,12 @@ class Boisson
     #[ORM\Column]
     private ?int $note = null;
 
+    #[ORM\ManyToOne(inversedBy: 'boissons')]
+    private ?Type $type = null;
+
+    #[ORM\ManyToOne(inversedBy: 'boissons')]
+    private ?Intensity $intensity = null;
+
     public function __construct()
     {
         $this->favoris = new ArrayCollection();
@@ -175,6 +181,30 @@ class Boisson
     public function setNote(int $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getType(): ?Type
+    {
+        return $this->type;
+    }
+
+    public function setType(?Type $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getIntensity(): ?Intensity
+    {
+        return $this->intensity;
+    }
+
+    public function setIntensity(?Intensity $intensity): static
+    {
+        $this->intensity = $intensity;
 
         return $this;
     }

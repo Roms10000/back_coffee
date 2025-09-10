@@ -3,12 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Produit;
+use App\Entity\Boisson;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+
 
 class ProduitCrudController extends AbstractCrudController
 {
@@ -21,15 +23,19 @@ class ProduitCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id') -> onlyOnIndex(),
-            TextField::new('name'),
+            TextField::new('name')
+            ->setLabel('Nom'),
             TextEditorField::new('description'),
-            NumberField::new('price'),
-            NumberField::new('intensity'),
-            TextField::new('origin'),
+            NumberField::new('price')
+            ->setLabel('Prix en €'),
+            NumberField::new('intensity')
+            ->setLabel('Intensité du café /10'),
+            TextField::new('origin')
+            ->setLabel('Origine'),
             ImageField::new('image')
             ->setBasePath('/uploads/image')
             ->setUploadDir('public/uploads/image')
-            ->setLabel('image')
+            ->setLabel('Image')
         ];
     }
 }

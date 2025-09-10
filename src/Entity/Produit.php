@@ -27,7 +27,7 @@ class Produit
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
     private ?string $price = null;
 
     #[ORM\Column(nullable: true)]
@@ -37,15 +37,15 @@ class Produit
     private ?string $origin = null;
 
     /**
-     * @var Collection<int, boisson>
+     * @var Collection<int, Boisson>
      */
-    #[ORM\ManyToMany(targetEntity: boisson::class, inversedBy: 'produits')]
+    #[ORM\ManyToMany(targetEntity: Boisson::class, inversedBy: 'produits')]
     private Collection $boissons;
 
     /**
-     * @var Collection<int, recette>
+     * @var Collection<int, Recette>
      */
-    #[ORM\ManyToMany(targetEntity: recette::class, inversedBy: 'produits')]
+    #[ORM\ManyToMany(targetEntity: Recette::class, inversedBy: 'produits')]
     private Collection $recettes;
 
     /**
@@ -140,7 +140,7 @@ class Produit
 
 
     /**
-     * @return Collection<int, boisson>
+     * @return Collection<int, Boisson>
      */
     public function getBoissons(): Collection
     {
@@ -164,7 +164,7 @@ class Produit
     }
 
     /**
-     * @return Collection<int, recette>
+     * @return Collection<int, Recette>
      */
     public function getRecettes(): Collection
     {

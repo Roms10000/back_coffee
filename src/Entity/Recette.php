@@ -17,7 +17,7 @@ class Recette
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 2000)]
     private ?string $etape = null;
 
     /**
@@ -29,6 +29,9 @@ class Recette
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?boisson $boisson = null;
+
+    #[ORM\Column(length: 2000)]
+    private ?string $info = null;
 
     public function __construct()
     {
@@ -87,6 +90,18 @@ class Recette
     public function setBoisson(Boisson $boisson): static
     {
         $this->boisson = $boisson;
+
+        return $this;
+    }
+
+    public function getInfo(): ?string
+    {
+        return $this->info;
+    }
+
+    public function setInfo(string $info): static
+    {
+        $this->info = $info;
 
         return $this;
     }

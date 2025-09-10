@@ -20,6 +20,7 @@ class ArchiveCrudController extends AbstractCrudController
         return [
             IdField::new('id'),
             TextField::new('name')
+            ->setLabel('Nom'),
         ];
     }
 }
