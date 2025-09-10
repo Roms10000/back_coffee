@@ -26,6 +26,12 @@ class Categorie
     #[ORM\OneToMany(targetEntity: Boisson::class, mappedBy: 'categorie')]
     private Collection $boissons;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $intensity = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $type = null;
+
     public function __construct()
     {
         $this->boissons = new ArrayCollection();
@@ -81,5 +87,29 @@ class Categorie
     public function __toString(): string
     {
     return $this->name ?? '';
+    }
+
+    public function getIntensity(): ?string
+    {
+        return $this->intensity;
+    }
+
+    public function setIntensity(?string $intensity): static
+    {
+        $this->intensity = $intensity;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
     }
 }
