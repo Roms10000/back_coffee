@@ -12,7 +12,10 @@ use App\Entity\Recette;
 use App\Entity\Archive;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
-#[ApiResource] 
+#[ApiResource(
+    normalizationContext: ['groups' => ['produit:read']],
+    denormalizationContext: ['groups' => ['produit:write']]
+)]
 class Produit
 {
     #[ORM\Id]
@@ -42,6 +45,7 @@ class Produit
      * @var Collection<int, Boisson>
      */
     #[ORM\ManyToMany(targetEntity: Boisson::class, inversedBy: 'produits')]
+    #[ORM\JoinTable(name: 'boisson_produit')]
     private Collection $boissons;
 
     /**
@@ -153,6 +157,7 @@ class Produit
     {
         if (!$this->boissons->contains($boisson)) {
             $this->boissons->add($boisson);
+            $boisson->addProduit($this);
         }
 
         return $this;
@@ -161,6 +166,7 @@ class Produit
     public function removeBoisson(Boisson $boisson): static
     {
         $this->boissons->removeElement($boisson);
+        $boisson->removeProduit($this);
 
         return $this;
     }

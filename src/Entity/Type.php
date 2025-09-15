@@ -3,12 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\TypeRepository;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Boisson;
 
 #[ORM\Entity(repositoryClass: TypeRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['type:read']],
+    denormalizationContext: ['groups' => ['type:write']]
+)]
 class Type
 {
     #[ORM\Id]
@@ -17,6 +22,7 @@ class Type
     private ?int $id = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['type:read', 'type:write', 'boisson:read'])]
     private ?string $name = null;
 
     /**

@@ -11,7 +11,10 @@ use App\Entity\Boisson;
 use App\Entity\Produit;
 
 #[ORM\Entity(repositoryClass: RecetteRepository::class)]
-#[ApiResource] 
+#[ApiResource(
+    normalizationContext: ['groups' => ['recette:read']],
+    denormalizationContext: ['groups' => ['recette:write']]
+)]
 class Recette
 {
     #[ORM\Id]

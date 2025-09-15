@@ -3,12 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\IntensityRepository;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Boisson;
 
 #[ORM\Entity(repositoryClass: IntensityRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['intensity:read']],
+    denormalizationContext: ['groups' => ['intensity:write']]
+)]
 class Intensity
 {
     #[ORM\Id]
@@ -17,6 +22,7 @@ class Intensity
     private ?int $id = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['intensity:read', 'intensity:write', 'boisson:read'])]
     private ?string $name = null;
 
     /**

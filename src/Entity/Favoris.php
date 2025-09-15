@@ -3,11 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\FavorisRepository;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Boisson;
 use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: FavorisRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['favoris:read']],
+    denormalizationContext: ['groups' => ['favoris:write']]
+)]
 class Favoris
 {
     #[ORM\Id]

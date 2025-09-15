@@ -11,7 +11,10 @@ use App\Entity\Boisson;
 
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['categorie:read']],
+    denormalizationContext: ['groups' => ['categorie:write']]
+)]
 class Categorie
 {
     #[ORM\Id]

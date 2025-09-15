@@ -35,7 +35,6 @@ class Boisson
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
-
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
@@ -64,9 +63,11 @@ class Boisson
     private ?int $note = null;
 
     #[ORM\ManyToOne(inversedBy: 'boissons')]
+    #[Groups(['boisson:read', 'boisson:write'])]
     private ?Type $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'boissons')]
+    #[Groups(['boisson:read', 'boisson:write'])]
     private ?Intensity $intensity = null;
 
     public function __construct()
