@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: ArchiveRepository::class)]
+#[ApiResource] 
 class Archive
 {
     #[ORM\Id]

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RecetteRepository;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,6 +11,7 @@ use App\Entity\Boisson;
 use App\Entity\Produit;
 
 #[ORM\Entity(repositoryClass: RecetteRepository::class)]
+#[ApiResource] 
 class Recette
 {
     #[ORM\Id]

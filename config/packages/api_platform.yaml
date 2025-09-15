@@ -1,0 +1,5 @@
+api_platform:
+    title: Hello API Platform
+    version: 1.0.0
+    defaults:
+        pagination_items_per_page: 10

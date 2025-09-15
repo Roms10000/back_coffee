@@ -1,8 +1,14 @@
 <?php
 
 namespace App\Entity;
+// use qui résout le probleme de circular réference a cause de relations bidirectionnelles
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+// Groups → contrôle quels champs sont exposés pour read (GET) et write (POST/PUT/PATCH).
+// MaxDepth(1) → limite la profondeur de sérialisation pour éviter la boucle infinie.
 
 use App\Repository\BoissonRepository;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -12,17 +18,24 @@ use App\Entity\Produit;
 use App\Entity\Categorie;
 
 #[ORM\Entity(repositoryClass: BoissonRepository::class)]
+#[ApiResource(
+normalizationContext: ['groups' => ['boisson:read']],
+denormalizationContext: ['groups' => ['boisson:write']]
+)]
 class Boisson
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['boisson:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['boisson:read' , 'boisson:write'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
@@ -36,12 +49,15 @@ class Boisson
 
     #[ORM\ManyToOne(inversedBy: 'boissons')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['boisson:read', 'boisson:write'])]
     private ?categorie $categorie = null;
 
     /**
      * @var Collection<int, Produit>
      */
     #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'boissons')]
+    #[Groups(['boisson:read', 'boisson:write'])]
+    #[MaxDepth(1)]
     private Collection $produits;
 
     #[ORM\Column]
