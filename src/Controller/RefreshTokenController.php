@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
+use App\Dto\RefreshTokenOutput;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Cookie;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class RefreshTokenController extends AbstractController
 {
-    private $jwtManager;
-    private $userProvider;
+    private JWTTokenManagerInterface $jwtManager;
+    private UserProviderInterface $userProvider;
 
     public function __construct(JWTTokenManagerInterface $jwtManager, UserProviderInterface $userProvider)
     {
@@ -21,30 +21,43 @@ class RefreshTokenController extends AbstractController
         $this->userProvider = $userProvider;
     }
 
-    #[Route('/api/refresh', name: 'api_refresh', methods: ['POST'])]
-    public function refresh(Request $request): JsonResponse
+    public function __invoke(Request $request): RefreshTokenOutput
     {
-        // Récupère le cookie refreshToken
         $refreshToken = $request->cookies->get('refreshToken');
 
         if (!$refreshToken) {
-            return new JsonResponse(['message' => 'Refresh token manquant'], 401);
+            throw $this->createAccessDeniedException('Refresh token manquant');
         }
 
-        // Ici, tu peux vérifier le token avec JWT ou en BDD
-        try {
-            // Exemple de décodage simple (adapter selon ta config)
-            $payload = $this->jwtManager->decode($refreshToken);
+        $payload = $this->jwtManager->decode($refreshToken);
+        $user = $this->userProvider->loadUserByIdentifier($payload['email'] ?? null);
 
-            // Récupère l'utilisateur correspondant
-            $user = $this->userProvider->loadUserByUsername($payload['email']);
-
-            // Génère un nouvel access token
-            $newAccessToken = $this->jwtManager->create($user);
-
-            return new JsonResponse(['accessToken' => $newAccessToken]);
-        } catch (\Exception $e) {
-            return new JsonResponse(['message' => 'Refresh token invalide'], 403);
+        if (!$user) {
+            throw $this->createNotFoundException('Utilisateur introuvable');
         }
+
+        $newAccessToken = $this->jwtManager->create($user);
+        $newRefreshToken = $this->jwtManager->create($user);
+
+        // Mettre le refresh token dans un cookie
+        $cookie = Cookie::create(
+            'refreshToken',
+            $newRefreshToken,
+            (new \DateTime('+7 days'))->getTimestamp(),
+            '/',
+            null,
+            true,   // secure
+            true,   // httpOnly
+            false,
+            'Strict'
+        );
+
+        $response = new RefreshTokenOutput();
+        $response->accessToken = $newAccessToken;
+
+        // Utiliser un EventListener pour ajouter le cookie à la réponse API Platform
+        $request->attributes->set('_refreshTokenCookie', $cookie);
+
+        return $response;
     }
 }

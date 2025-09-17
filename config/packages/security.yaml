@@ -21,12 +21,9 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-        # Routes JWT pour React
-        api_react:
-            pattern: ^/api/react
+        api_refresh:
+            pattern: ^/api/refresh
             stateless: true
-            provider: app_user_provider
-            jwt: ~
 
         main:
             lazy: true
@@ -49,6 +46,7 @@ security:
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: ROLE_ADMIN } # API Platform classique
