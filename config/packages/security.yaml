@@ -10,7 +10,7 @@ security:
                 property: email
 
     firewalls:
-        # 🔹 Authentification par login JWT
+        # 🔹 Authentification par JWT pour l’API
         api:
             pattern: ^/api
             stateless: true
@@ -18,17 +18,14 @@ security:
 
             json_login:
                 check_path: /api/login_check
-                username_path: email
+                username_path: email # ici on utilise ton email comme identifiant
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-            logout:
-                path: api_token_invalidate
-        # 🔹 Firewall principal pour l’app (form_login)
         main:
             lazy: true
             provider: app_user_provider
+
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -42,11 +39,10 @@ security:
                 secret: "%kernel.secret%"
                 lifetime: 604800
                 path: /
-            custom_authenticator: App\Security\AppAuthentificatorAuthenticator
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login_check, roles: PUBLIC_ACCESS } # point de login JWT
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/invalidate, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
