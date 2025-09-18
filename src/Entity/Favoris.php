@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\FavorisRepository;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Boisson;
 use App\Entity\User;
