@@ -1,19 +1,22 @@
+# config/packages/security.yaml
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: auto
+
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
+
     firewalls:
-        # Route de login JWT pour React
-        api_login:
-            pattern: ^/api/login
+        # 🔹 Authentification par login JWT
+        api:
+            pattern: ^/api
             stateless: true
+            provider: app_user_provider
+            entry_point: jwt
+
             json_login:
                 check_path: /api/login
                 username_path: email
@@ -21,10 +24,13 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-        api_refresh:
-            pattern: ^/api/refresh
-            stateless: true
+            jwt: ~
+            refresh_jwt:
+                check_path: /api/token/refresh
 
+            logout:
+                path: api_token_invalidate
+        # 🔹 Firewall principal pour l’app (form_login)
         main:
             lazy: true
             provider: app_user_provider
@@ -35,7 +41,6 @@ security:
             logout:
                 path: app_logout
                 target: app_login
-
             entry_point: form_login
 
             remember_me:
@@ -43,13 +48,15 @@ security:
                 lifetime: 604800
                 path: /
             custom_authenticator: App\Security\AppAuthentificatorAuthenticator
+
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/refresh, roles: PUBLIC_ACCESS }
+        - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
+        - { path: ^/api/token/invalidate, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/api, roles: ROLE_ADMIN } # API Platform classique
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

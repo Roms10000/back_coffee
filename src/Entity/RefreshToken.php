@@ -1,23 +1,12 @@
 <?php
+
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Post;
-use App\Controller\RefreshTokenController;
-use App\Dto\RefreshTokenOutput;
+use Doctrine\ORM\Mapping as ORM;
+use Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken as BaseRefreshToken;
 
-#[ApiResource(
-    operations: [
-        new Post(
-            uriTemplate: '/refresh',
-            controller: RefreshTokenController::class,
-            name: 'api_refresh',
-            output: RefreshTokenOutput::class
-        )
-    ],
-    paginationEnabled: false
-)]
-class RefreshToken
+#[ORM\Entity]
+#[ORM\Table(name: 'refresh_token')]
+class RefreshToken extends BaseRefreshToken
 {
-    // vide, juste pour API Platform
 }
