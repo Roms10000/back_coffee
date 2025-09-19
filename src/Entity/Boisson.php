@@ -35,9 +35,11 @@ class Boisson
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['boisson:read', 'boisson:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['boisson:read', 'boisson:write'])]
     private ?string $image = null;
 
     /**
